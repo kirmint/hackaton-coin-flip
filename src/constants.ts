@@ -1,4 +1,4 @@
 export const config = {
-    SCREEN_WIDTH: 1280,
-    SCREEN_HEIGHT: 720,
+    SCREEN_WIDTH: 360,
+    SCREEN_HEIGHT: 360,
 };

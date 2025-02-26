@@ -21,7 +21,6 @@ interface GameState {
 }
 
 const DEFAULT_MULTIPLIER = 1.5;
-const BOOST_MULTIPLIER = 2;
 
 export const gameStore = create<GameState>((set) => {
   return {

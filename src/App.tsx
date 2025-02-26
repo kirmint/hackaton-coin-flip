@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import { PixiGame, PixiGameHandle } from "./pixStuff/PixiGame";
+import { soundService } from "./pixStuff/SoundService";
 
 function App() {
     const pixiGameRef = useRef<PixiGameHandle>(null);
+    const [music, setMusic] = useState(false);
     const [balance, setBalance] = useState(10000);
     const [stake, setStake] = useState(50);
     const [winRate, setWinRate] = useState(68);
@@ -46,12 +48,26 @@ function App() {
 
     const handleFlipFromParent = () => {
         if (pixiGameRef.current) {
+            soundService.play("click");
             pixiGameRef.current.flip();
         }
     };
 
     return (
         <div className="app-container">
+            <button
+                className="sound-button"
+                onClick={() => {
+                    setMusic(!music);
+                    if (music) {
+                        soundService.playMusic("background");
+                    } else {
+                        soundService.stopMusic();
+                    }
+                }}
+            >
+                Music
+            </button>
             <div className="wrapper">
                 <div className="orb orb-1"></div>
                 <div className="orb orb-2"></div>

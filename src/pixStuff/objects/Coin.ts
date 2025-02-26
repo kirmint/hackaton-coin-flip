@@ -1,8 +1,8 @@
 import { AnimatedSprite, Ticker } from "pixi.js";
-import { ResouceManager } from "../ResourceManage";
-import { config } from "../constants";
 import gsap from "gsap";
 import { random } from "../utils/utils";
+import { ResouceManager } from "../ResourceManage";
+import { config } from "../constants";
 
 enum State {
     PLAY,

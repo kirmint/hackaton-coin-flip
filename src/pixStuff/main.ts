@@ -1,8 +1,8 @@
 import { Application, Container } from "pixi.js";
 import { config } from "./constants";
 import { ResouceManager } from "./ResourceManage";
-import { Coin } from "./objects/Coin";
 import { ScreenShake } from "./objects/ScreenShake";
+import { Coin } from "./objects/Coin";
 
 const button = document.getElementById("button");
 
@@ -36,11 +36,11 @@ async function main() {
 
 async function setup() {
     await app.init({
-        background: "#1099bb",
         width: config.SCREEN_WIDTH,
         height: config.SCREEN_HEIGHT,
         autoDensity: true,
         antialias: true,
+        backgroundAlpha: 0,
     });
     document.body.appendChild(app.canvas);
 }

@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { random } from "../utils/utils";
 import { ResouceManager } from "../ResourceManage";
 import { config } from "../constants";
+import { soundService } from "../SoundService";
 
 enum State {
     PLAY,
@@ -43,6 +44,7 @@ export class Coin {
         this.animatedSprite.rotation = random(-Math.PI, Math.PI);
         this.state = State.STOP;
         this.animatedSprite.scale = 1;
+        soundService.play("drop");
     }
 
     play() {
@@ -52,6 +54,7 @@ export class Coin {
         this.animatedSprite.scale = 1;
         this.state = State.PLAY;
         this.animatedSprite.play();
+        soundService.play("flip");
     }
 
     update(time: Ticker) {

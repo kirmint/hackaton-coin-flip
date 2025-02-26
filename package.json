@@ -10,14 +10,16 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "gsap": "^3.12.7",
+        "howler": "^2.2.4",
+        "pixi.js": "^8.7.2",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
-        "zustand": "^5.0.3",
-        "gsap": "^3.12.7",
-        "pixi.js": "^8.7.2"
+        "zustand": "^5.0.3"
     },
     "devDependencies": {
         "@eslint/js": "^9.21.0",
+        "@types/howler": "^2.2.12",
         "@types/react": "^19.0.10",
         "@types/react-dom": "^19.0.4",
         "@vitejs/plugin-react-swc": "^3.8.0",

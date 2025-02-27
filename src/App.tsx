@@ -75,6 +75,9 @@ function App() {
 
                 window.setTimeout(() => {
                     setIsLastWon(lastRound.isRoundWon);
+                    if (lastRound.isRoundWon) {
+                        pixiWinAnimationRef.current?.play();
+                    }
                 }, 1100);
             }
         }, 100);
@@ -86,12 +89,6 @@ function App() {
         gameService.resetAndCashout();
         setIsLastWon(false);
     };
-
-    useEffect(() => {
-        if (isLastWon) {
-            pixiWinAnimationRef.current?.play();
-        }
-    }, [isLastWon]);
 
     return (
         <div className="app-container">

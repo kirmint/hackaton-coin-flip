@@ -64,6 +64,7 @@ export const useGameStore = create<GameState>((set) => {
     resetRound: () =>
       set((state) => ({
         balance: Number((state.balance + state.wonInARowAmount).toFixed(2)),
+        isLastRoundWon: false,
         wonInARowAmount: 0,
         wonInARowCount: 0,
         multiplier: DEFAULT_MULTIPLIER,

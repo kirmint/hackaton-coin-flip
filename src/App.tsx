@@ -66,7 +66,6 @@ function App() {
         window.setTimeout(() => {
             if (pixiGameRef.current) {
                 pixiGameRef.current.flip(lastRound.result);
-                const lastRound = gameService.run();
                 setIsLastWon(lastRound.isRoundWon);
                 if (!lastRound.isRoundWon) {
                     gameService.resetAndCashout();

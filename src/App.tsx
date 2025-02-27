@@ -17,12 +17,6 @@ function App() {
   const store = useGameStore();
   const [music, setMusic] = useState(false);
 
-  useGameStore.subscribe((state) => {
-    if (state.isLastRoundWon) {
-      pixiWinAnimationRef.current?.play();
-    }
-  });
-
   const [luckyHourTime, setLuckyHourTime] = useState("29:12");
 
   useEffect(() => {
@@ -70,6 +64,11 @@ function App() {
     window.setTimeout(() => {
       if (pixiGameRef.current) {
         pixiGameRef.current.flip(lastRound.result);
+        if (lastRound.isRoundWon) {
+          window.setTimeout(() => {
+            pixiWinAnimationRef.current?.play();
+          }, 1000);
+        }
       }
     }, 100);
 

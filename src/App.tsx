@@ -89,9 +89,7 @@ function App() {
 
     useEffect(() => {
         if (isLastWon) {
-            window.setTimeout(() => {
-                pixiWinAnimationRef.current?.play();
-            }, 1000);
+            pixiWinAnimationRef.current?.play();
         }
     }, [isLastWon]);
 

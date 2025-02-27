@@ -62,7 +62,6 @@ function App() {
 
 	const handleFlipFromParent = () => {
 		if (pixiGameRef.current) {
-			soundService.play("click");
 			pixiGameRef.current.flip();
 			const lastRound = gameService.run();
 			setIsLastWon(lastRound.isRoundWon);

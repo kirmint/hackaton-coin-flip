@@ -11,8 +11,8 @@ enum State {
 }
 
 enum Side {
-    HEAD,
-    TAILS,
+    HEAD = "HEADS",
+    TAILS = "TAILS",
 }
 
 export class Coin {
@@ -34,8 +34,8 @@ export class Coin {
         this.side = Side.HEAD;
     }
 
-    stop() {
-        this.side = Math.random() > 0.5 ? Side.HEAD : Side.TAILS;
+    stop(result: Side) {
+        this.side = result;
         this.animatedSprite.gotoAndStop(
             this.side === Side.HEAD
                 ? 0
@@ -64,7 +64,7 @@ export class Coin {
             time.deltaTime * random(0.05, 0.2) * this.rotationRandomizer;
     }
 
-    flip(time: number) {
+    flip(time: number, result: Side) {
         if (this.state === State.PLAY) return;
 
         this.play();
@@ -88,7 +88,7 @@ export class Coin {
         });
 
         window.setTimeout(() => {
-            this.stop();
+            this.stop(result);
         }, time);
     }
 }

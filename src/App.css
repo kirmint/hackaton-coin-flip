@@ -696,3 +696,7 @@
 .cashout {
     flex-basis: 30%;
 }
+
+.pixi-animation-container {
+    position: absolute;
+}

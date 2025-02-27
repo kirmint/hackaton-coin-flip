@@ -1,20 +1,35 @@
 import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import { Application, Container } from "pixi.js";
+import { WinMessage } from "./WinMessage";
 
-export const PixiAnimation = () => {
+export interface PixiWinHandle {
+    play: () => void;
+}
+
+export const PixiAnimation = forwardRef((_, ref) => {
     const pixiContainerRef = useRef<HTMLDivElement>(null);
     const appRef = useRef<Application>(null);
+    const winMessageRef = useRef<WinMessage>(null);
+
+    const handleWin = () => {
+        if (winMessageRef.current) {
+            winMessageRef.current.play();
+        }
+    };
+
+    // Expose methods to parent component
+    useImperativeHandle(ref, () => ({
+        play: handleWin,
+    }));
 
     useEffect(() => {
         const setupPixi = async () => {
             const app = new Application();
 
             await app.init({
-                width: 1000,
-                height: 1000,
-                autoDensity: true,
-                antialias: true,
-                // backgroundAlpha: 0
+                width: window.innerWidth,
+                height: window.innerHeight,
+                backgroundAlpha: 0,
             });
 
             appRef.current = app;
@@ -23,6 +38,10 @@ export const PixiAnimation = () => {
             if (pixiContainerRef.current) {
                 pixiContainerRef.current.appendChild(app.canvas);
             }
+            const animContainer = new Container();
+            const winMessage = new WinMessage(animContainer, app);
+            winMessageRef.current = winMessage;
+            app.stage.addChild(animContainer);
         };
 
         setupPixi();
@@ -37,4 +56,4 @@ export const PixiAnimation = () => {
     return (
         <div ref={pixiContainerRef} className="pixi-animation-container"></div>
     );
-};
+});

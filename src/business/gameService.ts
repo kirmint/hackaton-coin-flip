@@ -55,7 +55,8 @@ class GameService {
   public run(): { isRoundWon: boolean; result: BettingOption } {
     const result = this.getRandomSide();
     const store = this.store.getState();
-    const changeAmount = store.stake * store.multiplier;
+    const changeAmount =
+      (store.wonInARowAmount || store.stake) * store.multiplier;
     const isRoundWon = result === store.selectedBetOption;
 
     setTimeout(() => {

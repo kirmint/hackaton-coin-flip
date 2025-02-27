@@ -138,7 +138,7 @@
 
 .orb-6 {
 	bottom: 200px;
-	right: 50px;
+	right: 75px;
 	width: 80px;
 	height: 80px;
 	opacity: 0.5;
@@ -683,20 +683,20 @@
 }
 
 .buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
 }
 
 .continue {
-    flex-basis: 70%;
+	flex-basis: 70%;
 }
 
 .cashout {
-    flex-basis: 30%;
+	flex-basis: 30%;
 }
 
 .pixi-animation-container {
-    position: absolute;
+	position: absolute;
 }

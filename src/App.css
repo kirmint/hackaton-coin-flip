@@ -681,3 +681,18 @@
 	cursor: pointer;
 	font-weight: 600;
 }
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.continue {
+    flex-basis: 70%;
+}
+
+.cashout {
+    flex-basis: 30%;
+}

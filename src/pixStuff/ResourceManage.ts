@@ -1,6 +1,6 @@
 import { Assets } from "pixi.js";
 
-const SPRITESHEET_PATH = "./assets/1.json";
+const SPRITESHEET_PATH = "./assets/3.json";
 
 export class ResouceManager {
     static getTexture(frameName: string) {

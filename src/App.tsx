@@ -6,11 +6,22 @@ import { gameService } from "./business/gameService";
 import { useGameStore } from "./business/gameStore";
 import { BettingOption } from "./business/enums";
 import { CoinFlip } from "./CoinFlip/CoinFlip";
+import {
+  PixiAnimation,
+  PixiWinHandle,
+} from "./pixStuff/bigAnimation/PixiAnimation";
 
 function App() {
   const pixiGameRef = useRef<PixiGameHandle>(null);
+  const pixiWinAnimationRef = useRef<PixiWinHandle>(null);
   const store = useGameStore();
   const [music, setMusic] = useState(false);
+
+  useGameStore.subscribe((state) => {
+    if (state.isLastRoundWon) {
+      pixiWinAnimationRef.current?.play();
+    }
+  });
 
   const [luckyHourTime, setLuckyHourTime] = useState("29:12");
 
@@ -71,6 +82,7 @@ function App() {
 
   return (
     <div className="app-container">
+      <PixiAnimation ref={pixiWinAnimationRef} />
       <button
         className="sound-button"
         onClick={() => {

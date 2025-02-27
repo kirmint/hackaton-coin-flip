@@ -37,27 +37,35 @@ class GameService {
     }, this.BOOST_ROUND_INTERVAL);
   }
 
+  private updateRoundResult(isRoundWon: boolean, changeAmount: number): void {
+    const store = this.store.getState();
+    if (isRoundWon) {
+      store.setWonInARowAmount(changeAmount);
+      store.setWinRate(true);
+      this.calculateMultiplier();
+    } else {
+      store.setWonInARowAmount(-changeAmount);
+      store.setWinRate(false);
+      this.resetAndCashout();
+    }
+    store.setIsLastRoundWon(isRoundWon);
+  }
+
   // should be used on start game or continue
   public run(): { isRoundWon: boolean; result: BettingOption } {
     const result = this.getRandomSide();
     const store = this.store.getState();
     const changeAmount = store.stake * store.multiplier;
-    if (result === store.selectedBetOption) {
-      store.setWonInARowAmount(changeAmount);
-      store.setWinRate(true);
-      this.calculateMultiplier();
-      return {
-        isRoundWon: true,
-        result,
-      };
-    } else {
-      store.setWonInARowAmount(-changeAmount);
-      store.setWinRate(false);
-      return {
-        isRoundWon: false,
-        result,
-      };
-    }
+    const isRoundWon = result === store.selectedBetOption;
+
+    setTimeout(() => {
+      this.updateRoundResult(isRoundWon, changeAmount);
+    }, 1100);
+
+    return {
+      isRoundWon,
+      result,
+    };
   }
 
   // should be used on cashout and reset (lost game)

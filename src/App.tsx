@@ -6,12 +6,17 @@ import { gameService } from "./business/gameService";
 import { useGameStore } from "./business/gameStore";
 import { BettingOption } from "./business/enums";
 import { CoinFlip } from "./CoinFlip/CoinFlip";
+import {
+	PixiAnimation,
+	PixiWinHandle,
+} from "./pixStuff/bigAnimation/PixiAnimation";
 
 function App() {
 	const pixiGameRef = useRef<PixiGameHandle>(null);
+	const pixiWinAnimationRef = useRef<PixiWinHandle>(null);
 	const store = useGameStore();
-	const [isLastWon, setIsLastWon] = useState(false);
 	const [music, setMusic] = useState(false);
+
 	const [luckyHourTime, setLuckyHourTime] = useState("29:12");
 
 	useEffect(() => {
@@ -56,20 +61,17 @@ function App() {
 		}
 	};
 
-	const handleFlipFromParent = (e: any) => {
+	const handleFlipFromParent = async (e: any) => {
 		const lastRound = gameService.run();
 
 		window.setTimeout(() => {
 			if (pixiGameRef.current) {
 				pixiGameRef.current.flip(lastRound.result);
-
-				if (!lastRound.isRoundWon) {
-					gameService.resetAndCashout();
+				if (lastRound.isRoundWon) {
+					window.setTimeout(() => {
+						pixiWinAnimationRef.current?.play();
+					}, 1000);
 				}
-
-				window.setTimeout(() => {
-					setIsLastWon(lastRound.isRoundWon);
-				}, 1100);
 			}
 		}, 100);
 
@@ -78,12 +80,12 @@ function App() {
 
 	const handleCashout = (e: any) => {
 		gameService.resetAndCashout();
-		setIsLastWon(false);
 		e.preventDefault();
 	};
 
 	return (
 		<div className="app-container">
+			<PixiAnimation ref={pixiWinAnimationRef} />
 			<button
 				className="sound-button"
 				onClick={() => {
@@ -153,7 +155,6 @@ function App() {
 							</span>
 						</div>
 					</section>
-
 					<PixiGame ref={pixiGameRef} />
 				</main>
 
@@ -182,11 +183,11 @@ function App() {
 									</div>
 								</div>
 
-								<div className="control-section">
+								<div className="control-section coin-control">
 									<h3>COIN SELECTION</h3>
 									<CoinFlip
-										disabled={!!store.wonInARowCount}
-										onFlipComplete={(result: any) =>
+										disabled={store.isLastRoundWon}
+										onFlipComplete={(result) =>
 											store.setBettingOption(
 												result === "BTC"
 													? BettingOption.HEADS
@@ -198,7 +199,7 @@ function App() {
 							</div>
 							<div className="control-section flip-control">
 								<div className="buttons">
-									{isLastWon && (
+									{store.isLastRoundWon && (
 										<button
 											className="flip-btn cashout"
 											onClick={handleCashout}

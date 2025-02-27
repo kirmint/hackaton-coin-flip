@@ -3,7 +3,7 @@ import { Container, Text, Graphics, Application } from "pixi.js";
 import gsap from "gsap";
 
 const color = "#fefefc";
-const glow = "#259d4e";
+const glow = "#9945ff";
 
 export class WinMessage {
     messageContainer: Container;

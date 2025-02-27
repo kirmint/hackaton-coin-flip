@@ -83,18 +83,6 @@
 	}
 }
 
-@media (max-width: 768px) {
-	.coin-container {
-		width: 150px;
-		height: 150px;
-	}
-
-	.coin {
-		width: 120px;
-		height: 120px;
-	}
-}
-
 @media (max-width: 480px) {
 	.coin-container {
 		width: 100px;

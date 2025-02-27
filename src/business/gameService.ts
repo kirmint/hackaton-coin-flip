@@ -20,7 +20,7 @@ class GameService {
       store.multiplier *
       ((1 + store.multiplier * 0.1) *
         (store.isBoostRound ? this.BOOST_MULTIPLIER : 1));
-    store.setMultiplier(multiplier);
+    store.setMultiplier(Number(multiplier.toFixed(2)));
   }
 
   private boostRoundWorker(): void {
@@ -37,14 +37,6 @@ class GameService {
     }, this.BOOST_ROUND_INTERVAL);
   }
 
-  public setStake(stake: number): void {
-    this.store.getState().setStake(stake);
-  }
-
-  public setBettingOption(option: BettingOption): void {
-    this.store.getState().setBettingOption(option);
-  }
-
   // should be used on start game or continue
   public run(): { isRoundWon: boolean; result: BettingOption } {
     const result = this.getRandomSide();
@@ -52,6 +44,7 @@ class GameService {
     const changeAmount = store.stake * store.multiplier;
     if (result === store.selectedBetOption) {
       store.setWonInARowAmount(changeAmount);
+      store.setWinRate(true);
       this.calculateMultiplier();
       return {
         isRoundWon: true,
@@ -59,6 +52,7 @@ class GameService {
       };
     } else {
       store.setWonInARowAmount(-changeAmount);
+      store.setWinRate(false);
       return {
         isRoundWon: false,
         result,

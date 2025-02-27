@@ -9,6 +9,10 @@ interface GameState {
   multiplier: number;
   selectedBetOption: BettingOption;
   isBoostRound: boolean;
+  winRate: {
+    wins: number;
+    total: number;
+  };
   setMultiplier: (multiplier: number) => void;
   resetMultiplier: () => void;
   increaseWonInARowCount: () => void;
@@ -17,6 +21,7 @@ interface GameState {
   setStake: (stake: number) => void;
   setBettingOption: (option: BettingOption) => void;
   setIsBoostRound: (isBoostRound: boolean) => void;
+  setWinRate: (isWon: boolean) => void;
   resetRound: () => void;
 }
 
@@ -31,6 +36,10 @@ export const useGameStore = create<GameState>((set) => {
     multiplier: DEFAULT_MULTIPLIER,
     selectedBetOption: BettingOption.HEADS,
     isBoostRound: false,
+    winRate: {
+      wins: 0,
+      total: 0,
+    },
     setMultiplier: (multiplier: number) => set({ multiplier }),
     resetMultiplier: () => set({ multiplier: DEFAULT_MULTIPLIER }),
     increaseWonInARowCount: () =>
@@ -41,7 +50,7 @@ export const useGameStore = create<GameState>((set) => {
       }),
     setWonInARowAmount: (amount: number) =>
       set((state) => ({
-        wonInARowAmount: amount,
+        wonInARowAmount: Number(amount.toFixed(2)),
         wonInARowCount: state.wonInARowCount + 1,
       })),
     resetWonInARowCount: () => set({ wonInARowCount: 0 }),
@@ -51,10 +60,17 @@ export const useGameStore = create<GameState>((set) => {
       set({ selectedBetOption: option }),
     resetRound: () =>
       set((state) => ({
-        balance: state.balance + state.wonInARowAmount,
+        balance: Number((state.balance + state.wonInARowAmount).toFixed(2)),
         wonInARowAmount: 0,
         wonInARowCount: 0,
         multiplier: DEFAULT_MULTIPLIER,
+      })),
+    setWinRate: (isWon: boolean) =>
+      set((state) => ({
+        winRate: {
+          wins: isWon ? state.winRate.wins + 1 : state.winRate.wins,
+          total: state.winRate.total + 1,
+        },
       })),
   };
 });

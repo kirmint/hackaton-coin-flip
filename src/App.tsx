@@ -4,19 +4,19 @@ import { PixiGame, PixiGameHandle } from "./pixStuff/PixiGame";
 import { soundService } from "./pixStuff/SoundService";
 import { gameService } from "./business/gameService";
 import { useGameStore } from "./business/gameStore";
+import { BettingOption } from "./business/enums";
 import { PixiAnimation } from "./pixStuff/bigAnimation/PixiAnimation";
 
 function App() {
     const pixiGameRef = useRef<PixiGameHandle>(null);
     const store = useGameStore();
-    // console.log(store);
     const [isLastWon, setIsLastWon] = useState(false);
     const [music, setMusic] = useState(false);
     // const [balance, setBalance] = useState(10000);
-    const [stake, setStake] = useState(50);
-    const [winRate, setWinRate] = useState(68);
-    const [multiplier, setMultiplier] = useState(1.5);
-    const [selectedCoin, setSelectedCoin] = useState("BTC");
+    // const [stake, setStake] = useState(50);
+    // const [winRate, setWinRate] = useState(68);
+    // const [multiplier, setMultiplier] = useState(1.5);
+    // const [selectedCoin, setSelectedCoin] = useState("BTC");
     const [luckyHourTime, setLuckyHourTime] = useState("29:12");
 
     useEffect(() => {
@@ -47,24 +47,41 @@ function App() {
     const adjustStake = (amount: number) => {
         const newStake = Math.max(
             0.01,
-            Math.min(store.balance, parseFloat((stake + amount).toFixed(2)))
+            Math.min(
+                store.balance,
+                parseFloat((store.stake + amount).toFixed(2))
+            )
         );
-        setStake(newStake);
+        store.setStake(newStake);
+    };
+
+    const handleFlipClick = () => {
+        if (pixiGameRef.current) {
+            soundService.play("click");
+        }
     };
 
     const handleFlipFromParent = () => {
         const lastRound = gameService.run();
         window.setTimeout(() => {
             if (pixiGameRef.current) {
-                soundService.play("click");
                 pixiGameRef.current.flip(lastRound.result);
+                const lastRound = gameService.run();
+                setIsLastWon(lastRound.isRoundWon);
+                if (!lastRound.isRoundWon) {
+                    gameService.resetAndCashout();
+                }
             }
         }, 0);
     };
 
+    const handleCashout = () => {
+        gameService.resetAndCashout();
+        setIsLastWon(false);
+    };
+
     return (
         <div className="app-container">
-            <PixiAnimation />
             <button
                 className="sound-button"
                 onClick={() => {
@@ -83,6 +100,8 @@ function App() {
                 <div className="orb orb-2"></div>
                 <div className="orb orb-3"></div>
                 <div className="orb orb-4"></div>
+                <div className="orb orb-5"></div>
+                <div className="orb orb-6"></div>
 
                 <header className="header">
                     <div className="logo-container">
@@ -100,7 +119,6 @@ function App() {
                 <main className="main-content">
                     <section className="panel stats-panel">
                         <h2>YOUR STATS</h2>
-
                         <div className="stat-row">
                             <span className="stat-label">BALANCE</span>
                             <span className="stat-value">
@@ -111,14 +129,20 @@ function App() {
                         <div className="stat-row">
                             <span className="stat-label">WIN RATE</span>
                             <span className="stat-value win-rate">
-                                {winRate}%
+                                {(store.winRate.wins
+                                    ? (store.winRate.wins /
+                                          store.winRate.total) *
+                                      100
+                                    : 0
+                                ).toFixed(2)}
+                                %
                             </span>
                         </div>
 
                         <div className="stat-row">
                             <span className="stat-label">MULTIPLIER</span>
                             <span className="stat-value multiplier">
-                                x{multiplier}
+                                x{store.multiplier}
                             </span>
                         </div>
                     </section>
@@ -139,7 +163,7 @@ function App() {
                                         -
                                     </button>
                                     <div className="stake-value">
-                                        {stake} USD
+                                        {store.stake} USD
                                     </div>
                                     <button
                                         className="stake-btn plus"
@@ -155,21 +179,33 @@ function App() {
                                 <div className="coin-buttons">
                                     <button
                                         className={`coin-btn btc ${
-                                            selectedCoin === "BTC"
+                                            store.selectedBetOption ===
+                                            BettingOption.HEADS
                                                 ? "selected"
                                                 : ""
                                         }`}
-                                        onClick={() => setSelectedCoin("BTC")}
+                                        onClick={() =>
+                                            store.setBettingOption(
+                                                BettingOption.HEADS
+                                            )
+                                        }
+                                        disabled={!!store.wonInARowCount}
                                     >
                                         BTC
                                     </button>
                                     <button
                                         className={`coin-btn eth ${
-                                            selectedCoin === "ETH"
+                                            store.selectedBetOption ===
+                                            BettingOption.TAILS
                                                 ? "selected"
                                                 : ""
                                         }`}
-                                        onClick={() => setSelectedCoin("ETH")}
+                                        onClick={() =>
+                                            store.setBettingOption(
+                                                BettingOption.TAILS
+                                            )
+                                        }
+                                        disabled={!!store.wonInARowCount}
                                     >
                                         ETH
                                     </button>
@@ -178,25 +214,26 @@ function App() {
 
                             <div className="control-section flip-control">
                                 {isLastWon ? (
-                                    <>
+                                    <div className="buttons">
                                         <button
-                                            className="flip-btn"
+                                            className="flip-btn continue"
                                             onClick={handleFlipFromParent}
                                         >
                                             <a href="#">CONTINUE</a>
                                         </button>
                                         <button
-                                            className="flip-btn"
-                                            onClick={handleFlipFromParent}
+                                            className="flip-btn cashout"
+                                            onClick={handleCashout}
                                         >
                                             <a href="#">CASHOUT</a>
                                         </button>
-                                    </>
+                                    </div>
                                 ) : (
                                     <>
                                         <h3>FLIP THE COIN</h3>
                                         <button
                                             className="flip-btn"
+                                            onMouseDown={handleFlipClick}
                                             onClick={handleFlipFromParent}
                                         >
                                             <a href="#">FLIP IT NOW</a>

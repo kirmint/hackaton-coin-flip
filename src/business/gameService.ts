@@ -2,7 +2,7 @@ import { useGameStore } from "./gameStore";
 import { BettingOption } from "./enums";
 
 class GameService {
-  private BOOST_MULTIPLIER = 2;
+  // private BOOST_MULTIPLIER = 2;
   private BOOST_ROUND_INTERVAL = 30000;
   private BOOST_ROUND_DURATION = 10000;
 
@@ -16,10 +16,7 @@ class GameService {
 
   private calculateMultiplier(): void {
     const store = this.store.getState();
-    const multiplier =
-      store.multiplier *
-      ((1 + store.multiplier * 0.1) *
-        (store.isBoostRound ? this.BOOST_MULTIPLIER : 1));
+    const multiplier = store.multiplier * (1 + store.multiplier * 0.1);
     store.setMultiplier(Number(multiplier.toFixed(2)));
   }
 

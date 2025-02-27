@@ -4,6 +4,7 @@ import { PixiGame, PixiGameHandle } from "./pixStuff/PixiGame";
 import { soundService } from "./pixStuff/SoundService";
 import { gameService } from "./business/gameService";
 import { useGameStore } from "./business/gameStore";
+import { PixiAnimation } from "./pixStuff/bigAnimation/PixiAnimation";
 
 function App() {
     const pixiGameRef = useRef<PixiGameHandle>(null);
@@ -63,6 +64,7 @@ function App() {
 
     return (
         <div className="app-container">
+            <PixiAnimation />
             <button
                 className="sound-button"
                 onClick={() => {

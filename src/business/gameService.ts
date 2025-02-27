@@ -1,4 +1,4 @@
-import { gameStore } from "./gameStore";
+import { useGameStore } from "./gameStore";
 import { BettingOption } from "./enums";
 
 class GameService {
@@ -6,7 +6,7 @@ class GameService {
   private BOOST_ROUND_INTERVAL = 30000;
   private BOOST_ROUND_DURATION = 10000;
 
-  constructor(private store: typeof gameStore) {
+  constructor(private store: typeof useGameStore) {
     this.boostRoundWorker();
   }
 
@@ -46,17 +46,23 @@ class GameService {
   }
 
   // should be used on start game or continue
-  public run(): boolean {
+  public run(): { isRoundWon: boolean; result: BettingOption } {
     const result = this.getRandomSide();
     const store = this.store.getState();
     const changeAmount = store.stake * store.multiplier;
     if (result === store.selectedBetOption) {
       store.setWonInARowAmount(changeAmount);
       this.calculateMultiplier();
-      return true;
+      return {
+        isRoundWon: true,
+        result,
+      };
     } else {
       store.setWonInARowAmount(-changeAmount);
-      return false;
+      return {
+        isRoundWon: false,
+        result,
+      };
     }
   }
 
@@ -66,4 +72,4 @@ class GameService {
   }
 }
 
-export const gameService = new GameService(gameStore);
+export const gameService = new GameService(useGameStore);

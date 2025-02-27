@@ -22,9 +22,9 @@ interface GameState {
 
 const DEFAULT_MULTIPLIER = 1.5;
 
-export const gameStore = create<GameState>((set) => {
+export const useGameStore = create<GameState>((set) => {
   return {
-    balance: 1000,
+    balance: 5000,
     stake: 1,
     wonInARowCount: 0,
     wonInARowAmount: 0,

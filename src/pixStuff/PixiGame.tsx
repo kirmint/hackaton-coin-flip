@@ -12,7 +12,7 @@ interface PixiGameProps {
 }
 
 export interface PixiGameHandle {
-    flip: () => void;
+    flip: (result: string) => void;
 }
 
 export const PixiGame = forwardRef<PixiGameHandle, PixiGameProps>(
@@ -24,9 +24,9 @@ export const PixiGame = forwardRef<PixiGameHandle, PixiGameProps>(
         const screenShakeRef = useRef<ScreenShake>(null);
 
         // Function to expose the flip method to parent component
-        const handleFlip = () => {
+        const handleFlip = (result: string) => {
             if (coinRef.current) {
-                coinRef.current.flip(FLIP_DURATION);
+                coinRef.current.flip(FLIP_DURATION, result);
                 window.setTimeout(() => {
                     if (appRef.current) {
                         screenShakeRef.current!.start();

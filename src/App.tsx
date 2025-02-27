@@ -57,18 +57,17 @@ function App() {
     }
   };
 
-  const handleFlipFromParent = () => {
-    if (pixiGameRef.current) {
-      soundService.play("click");
-      pixiGameRef.current.flip();
-      const lastRound = gameService.run();
-      setIsLastWon(lastRound.isRoundWon);
-      if (!lastRound.isRoundWon) {
-        gameService.resetAndCashout();
-      }
-      console.log(lastRound);
-    }
-  };
+	const handleFlipFromParent = () => {
+		if (pixiGameRef.current) {
+			pixiGameRef.current.flip();
+			const lastRound = gameService.run();
+			setIsLastWon(lastRound.isRoundWon);
+			if (!lastRound.isRoundWon) {
+				gameService.resetAndCashout();
+			}
+			console.log(lastRound);
+		}
+	};
 
   const handleCashout = () => {
     gameService.resetAndCashout();

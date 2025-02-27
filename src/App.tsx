@@ -5,6 +5,7 @@ import { soundService } from "./pixStuff/SoundService";
 import { gameService } from "./business/gameService";
 import { useGameStore } from "./business/gameStore";
 import { BettingOption } from "./business/enums";
+import { CoinFlip } from "./CoinFlip/CoinFlip";
 import {
     PixiAnimation,
     PixiWinHandle,
@@ -16,11 +17,7 @@ function App() {
     const store = useGameStore();
     const [isLastWon, setIsLastWon] = useState(false);
     const [music, setMusic] = useState(false);
-    // const [balance, setBalance] = useState(10000);
-    // const [stake, setStake] = useState(50);
-    // const [winRate, setWinRate] = useState(68);
-    // const [multiplier, setMultiplier] = useState(1.5);
-    // const [selectedCoin, setSelectedCoin] = useState("BTC");
+
     const [luckyHourTime, setLuckyHourTime] = useState("29:12");
 
     useEffect(() => {
@@ -50,7 +47,7 @@ function App() {
 
     const adjustStake = (amount: number) => {
         const newStake = Math.max(
-            0.01,
+            50,
             Math.min(
                 store.balance,
                 parseFloat((store.stake + amount).toFixed(2))
@@ -65,17 +62,24 @@ function App() {
         }
     };
 
-    const handleFlipFromParent = () => {
+    const handleFlipFromParent = (e: any) => {
         const lastRound = gameService.run();
+
         window.setTimeout(() => {
             if (pixiGameRef.current) {
                 pixiGameRef.current.flip(lastRound.result);
-                setIsLastWon(lastRound.isRoundWon);
+
                 if (!lastRound.isRoundWon) {
                     gameService.resetAndCashout();
                 }
+
+                window.setTimeout(() => {
+                    setIsLastWon(lastRound.isRoundWon);
+                }, 1100);
             }
-        }, 0);
+        }, 100);
+
+        e.preventDefault();
     };
 
     const handleCashout = () => {
@@ -193,70 +197,35 @@ function App() {
 
                             <div className="control-section coin-control">
                                 <h3>COIN SELECTION</h3>
-                                <div className="coin-buttons">
-                                    <button
-                                        className={`coin-btn btc ${
-                                            store.selectedBetOption ===
-                                            BettingOption.HEADS
-                                                ? "selected"
-                                                : ""
-                                        }`}
-                                        onClick={() =>
-                                            store.setBettingOption(
-                                                BettingOption.HEADS
-                                            )
-                                        }
-                                        disabled={!!store.wonInARowCount}
-                                    >
-                                        BTC
-                                    </button>
-                                    <button
-                                        className={`coin-btn eth ${
-                                            store.selectedBetOption ===
-                                            BettingOption.TAILS
-                                                ? "selected"
-                                                : ""
-                                        }`}
-                                        onClick={() =>
-                                            store.setBettingOption(
-                                                BettingOption.TAILS
-                                            )
-                                        }
-                                        disabled={!!store.wonInARowCount}
-                                    >
-                                        ETH
-                                    </button>
-                                </div>
+                                <CoinFlip
+                                    onFlipComplete={(result: any) =>
+                                        store.setBettingOption(
+                                            result === "BTC"
+                                                ? BettingOption.HEADS
+                                                : BettingOption.TAILS
+                                        )
+                                    }
+                                />
                             </div>
 
                             <div className="control-section flip-control">
-                                {isLastWon ? (
-                                    <div className="buttons">
-                                        <button
-                                            className="flip-btn continue"
-                                            onClick={handleFlipFromParent}
-                                        >
-                                            <a href="#">CONTINUE</a>
-                                        </button>
+                                <div className="buttons">
+                                    {isLastWon && (
                                         <button
                                             className="flip-btn cashout"
                                             onClick={handleCashout}
                                         >
                                             <a href="#">CASHOUT</a>
                                         </button>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <h3>FLIP THE COIN</h3>
-                                        <button
-                                            className="flip-btn"
-                                            onMouseDown={handleFlipClick}
-                                            onClick={handleFlipFromParent}
-                                        >
-                                            <a href="#">FLIP IT NOW</a>
-                                        </button>
-                                    </>
-                                )}
+                                    )}
+                                    <button
+                                        className="flip-btn"
+                                        onMouseDown={handleFlipClick}
+                                        onClick={handleFlipFromParent}
+                                    >
+                                        <a>FLIP IT NOW</a>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
